@@ -3,67 +3,79 @@ import { Navbar } from "@/components/ui/navbar";
 import { Pagination } from "@/components/ui/pagination";
 import { WallpaperCard } from "@/components/ui/wallpaper-card";
 import { searchWallpapers } from "@/lib/wallhaven";
-import { ArrowLeft } from "lucide-react";
+import { TrendingUp, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { cookies } from "next/headers";
 
-interface PopularPageProps {
- searchParams: Promise<{ page?: string }>;
+export default async function PopularPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+ const { page } = await searchParams;
+ const currentPage = Number(page) || 1;
+ const cookieStore = await cookies();
+ const isNsfw = cookieStore.get("settings_nsfw")?.value === "true";
+ const purity = isNsfw ? "111" : "100";
+
+ return (
+  <main className="min-h-screen relative overflow-hidden bg-background">
+   <BackgroundBlobs />
+   <Navbar />
+
+   <section className="container mx-auto px-6 md:px-12 pt-60 pb-32">
+    <div className="max-w-4xl mb-20 animate-fade-in-up">
+     <div className="flex items-center gap-4 mb-8">
+      <Link href="/" className="p-4 rounded-2xl glass-card hover:bg-accent/10 hover:border-accent/30 transition-all group">
+       <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
+      </Link>
+      <div className="p-4 rounded-2xl bg-accent/10 border border-accent/20 text-accent shadow-2xl">
+       <TrendingUp className="w-8 h-8" />
+      </div>
+     </div>
+     <h1 className="text-5xl md:text-8xl font-black text-foreground tracking-tighter mb-6 leading-[0.9]">
+      Most <span className="text-accent text-glow">Popular.</span>
+     </h1>
+     <p className="text-muted-foreground text-xl max-w-2xl font-medium leading-relaxed">
+      The community favorites. Sorted by total views and favorites across the global network.
+     </p>
+    </div>
+
+    <Suspense key={currentPage} fallback={<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+      {[...Array(8)].map((_, i) => (
+        <div key={i} className="aspect-[16/10] rounded-[2rem] bg-muted animate-pulse border border-border" />
+      ))}
+    </div>}>
+     <PopularResults page={currentPage} purity={purity} />
+    </Suspense>
+   </section>
+  </main>
+ );
 }
 
-async function PopularResults({ page, isNsfw }: { page: number; isNsfw: boolean }) {
- const purity = isNsfw ? "111" : "100";
+async function PopularResults({ page, purity }: { page: number; purity: string }) {
  const data = await searchWallpapers("", page, "views", purity, 24).catch(() => null);
 
  if (!data || !data.data || data.data.length === 0) {
   return (
-   <div className="flex flex-col items-center justify-center py-20 text-center">
-    <p className="text-white/50 mb-4">No popular wallpapers found.</p>
+   <div className="flex flex-col items-center justify-center py-40 text-center glass-card rounded-[3rem] noise">
+    <p className="text-foreground/50 mb-4 font-black text-xl">Unable to sync popularity feed.</p>
    </div>
   );
  }
 
  return (
   <>
-   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
     {data.data.map((image, index) => (
      <WallpaperCard key={image.id} image={image} priority={index < 4} />
     ))}
    </div>
 
-   <Pagination
-    currentPage={data.meta.current_page}
-    totalPages={data.meta.last_page}
-    baseUrl="/popular"
-   />
-  </>
- );
-}
-
-export default async function PopularPage({ searchParams }: PopularPageProps) {
- const { page } = await searchParams;
- const currentPage = Number(page) || 1;
- const cookieStore = await cookies();
- const isNsfw = cookieStore.get("settings_nsfw")?.value === "true";
-
- return (
-  <main className="min-h-screen bg-black text-white relative">
-   <BackgroundBlobs />
-   <Navbar />
-
-   <div className="container mx-auto px-4 pt-32 pb-20">
-    <div className="flex items-center gap-4 mb-8">
-     <Link href="/" className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
-      <ArrowLeft size={20} />
-     </Link>
-     <h1 className="text-3xl font-bold">Popular Wallpapers</h1>
-    </div>
-
-    <Suspense fallback={<div className="text-white/40">Loading...</div>}>
-     <PopularResults page={currentPage} isNsfw={isNsfw} />
-    </Suspense>
+   <div className="mt-20">
+    <Pagination
+     currentPage={data.meta.current_page}
+     totalPages={data.meta.last_page}
+     baseUrl="/popular"
+    />
    </div>
-  </main>
+  </>
  );
 }

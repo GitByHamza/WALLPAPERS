@@ -40,46 +40,46 @@ export function Pagination({ totalPages, currentPage, baseUrl }: PaginationProps
  if (totalPages <= 1) return null;
 
  return (
-  <div className="flex items-center justify-center gap-2 mt-12 mb-8">
-   {/* Previous Button */}
-   <Link
-    href={createPageUrl(currentPage - 1)}
-    className={cn(
-     "p-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white transition-all disabled:opacity-50 disabled:pointer-events-none",
-     currentPage <= 1 && "pointer-events-none opacity-50"
-    )}
-    aria-disabled={currentPage <= 1}
-   >
-    <ChevronLeft size={20} />
-   </Link>
-
-   {/* Page Numbers */}
-   {getPageNumbers().map((page) => (
+   <div className="flex items-center justify-center gap-3 mt-16 mb-8">
+    {/* Previous Button */}
     <Link
-     key={page}
-     href={createPageUrl(page)}
+     href={createPageUrl(currentPage - 1)}
      className={cn(
-      "w-10 h-10 flex items-center justify-center rounded-lg border text-sm font-medium transition-all",
-      currentPage === page
-       ? "bg-white text-black border-white shadow-[0_0_15px_rgba(255,255,255,0.3)] scale-110"
-       : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:text-white hover:border-white/30"
+      "p-3 rounded-2xl bg-background border border-border text-foreground/50 hover:border-accent hover:text-accent transition-all duration-300 disabled:opacity-50 shadow-sm hover:shadow-md",
+      currentPage <= 1 && "pointer-events-none opacity-30"
      )}
+     aria-disabled={currentPage <= 1}
     >
-     {page}
+     <ChevronLeft size={20} />
     </Link>
-   ))}
 
-   {/* Next Button */}
-   <Link
-    href={createPageUrl(currentPage + 1)}
-    className={cn(
-     "p-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white transition-all disabled:opacity-50 disabled:pointer-events-none",
-     currentPage >= totalPages && "pointer-events-none opacity-50"
-    )}
-    aria-disabled={currentPage >= totalPages}
-   >
-    <ChevronRight size={20} />
-   </Link>
-  </div>
+    {/* Page Numbers */}
+    {getPageNumbers().map((page) => (
+     <Link
+      key={page}
+      href={createPageUrl(page)}
+      className={cn(
+       "w-12 h-12 flex items-center justify-center rounded-2xl border text-sm font-black transition-all duration-300",
+       currentPage === page
+        ? "bg-foreground text-background border-foreground shadow-xl scale-110 z-10"
+        : "bg-background border-border text-foreground/50 hover:border-accent hover:text-accent hover:bg-accent/5"
+      )}
+     >
+      {page}
+     </Link>
+    ))}
+
+    {/* Next Button */}
+    <Link
+     href={createPageUrl(currentPage + 1)}
+     className={cn(
+      "p-3 rounded-2xl bg-background border border-border text-foreground/50 hover:border-accent hover:text-accent transition-all duration-300 disabled:opacity-50 shadow-sm hover:shadow-md",
+      currentPage >= totalPages && "pointer-events-none opacity-30"
+     )}
+     aria-disabled={currentPage >= totalPages}
+    >
+     <ChevronRight size={20} />
+    </Link>
+   </div>
  );
 }

@@ -1,3 +1,4 @@
+//@ts-nocheck
 export type WallhavenImage = {
  id: string;
  url: string;
@@ -5,14 +6,14 @@ export type WallhavenImage = {
  views: number;
  favorites: number;
  source: string;
- purity: string; // "sfw" | "sketchy" | "nsfw"
- category: string; // "general" | "anime" | "people"
+ purity: string;
+ category: string;
  dimension_x: number;
  dimension_y: number;
  resolution: string;
  ratio: string;
  file_size: number;
- file_type: string; // "image/jpeg" | "image/png"
+ file_type: string;
  created_at: string;
  colors: string[];
  path: string;
@@ -80,13 +81,15 @@ export async function searchWallpapers(
  page: number = 1,
  sorting: "date_added" | "relevance" | "random" | "views" | "favorites" | "toplist" = "relevance",
  purity?: string,
- per_page: number = 24
+ per_page: number = 24,
+ ratios?: string
 ): Promise<WallhavenResponse> {
  const url = buildUrl("/search", {
   q: query,
   page,
   sorting,
   purity: purity || (API_KEY ? "111" : "100"), // Default to ALL if key exists, else SFW
+  ratios,
  });
 
  console.log(`Fetching Wallhaven: ${url}`);

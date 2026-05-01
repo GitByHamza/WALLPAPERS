@@ -13,8 +13,5 @@ export async function toggleNsfw(currentState: boolean) {
   sameSite: "lax",
  });
 
- revalidatePath("/");
- revalidatePath("/search");
- revalidatePath("/popular");
- revalidatePath("/new");
+ revalidatePath("/", "layout");
 }

@@ -18,17 +18,28 @@ export const metadata: Metadata = {
  description: "Premium collection of 4K wallpapers with glassmorphic design.",
 };
 
+import { Footer } from "@/components/ui/footer";
+import { ThemeProvider } from "@/components/theme-provider";
+
 export default function RootLayout({
  children,
 }: Readonly<{
  children: React.ReactNode;
 }>) {
  return (
-  <html lang="en" className="dark">
+  <html lang="en" suppressHydrationWarning>
    <body
-    className={`${inter.variable} ${outfit.variable} antialiased bg-background text-foreground selection:bg-white/20 selection:text-white`}
+    className={`${inter.variable} ${outfit.variable} antialiased bg-background text-foreground selection:bg-accent/30 selection:text-white transition-colors duration-300`}
    >
-    {children}
+    <ThemeProvider
+     attribute="class"
+     defaultTheme="dark"
+     enableSystem
+     disableTransitionOnChange
+    >
+     {children}
+     <Footer />
+    </ThemeProvider>
    </body>
   </html>
  );
