@@ -21,7 +21,7 @@ export default async function MobilePage({ searchParams }: { searchParams: Promi
    <BackgroundBlobs />
    <Navbar />
 
-   <section className="container mx-auto px-6 md:px-12 pt-60 pb-32">
+   <section className="container mx-auto px-6 md:px-12 pt-36 pb-32">
     <div className="max-w-4xl mb-20 animate-fade-in-up">
      <div className="flex items-center gap-3 mb-6">
       <div className="p-4 rounded-3xl bg-accent/10 border border-accent/20 text-accent shadow-2xl">

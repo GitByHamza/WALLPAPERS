@@ -27,7 +27,7 @@ export function SearchFilters() {
 
  return (
   <div className="flex flex-wrap items-center gap-2 mb-10 animate-fade-in-up delay-100">
-   <span className="text-xs font-bold text-white/30 uppercase tracking-[0.2em] mr-2">Sort By:</span>
+   <span className="text-xs font-black text-muted-foreground/50 uppercase tracking-[0.2em] mr-2">Sort By:</span>
    {SORT_OPTIONS.map((option) => {
     const Icon = option.icon;
     const isActive = currentSort === option.value;
@@ -37,13 +37,13 @@ export function SearchFilters() {
       key={option.value}
       onClick={() => handleSort(option.value)}
       className={cn(
-       "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border",
+       "flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black transition-all border duration-300",
        isActive 
-        ? "bg-accent text-white border-accent shadow-[0_0_20px_rgba(var(--accent),0.3)] scale-105"
-        : "bg-white/5 text-white/40 border-white/10 hover:bg-white/10 hover:text-white"
+        ? "bg-accent text-white border-accent shadow-2xl scale-105 z-10"
+        : "bg-background text-muted-foreground border-border hover:border-accent/30 hover:text-accent hover:bg-accent/5"
       )}
      >
-      <Icon size={14} />
+      <Icon size={14} className={isActive ? "text-white" : "text-accent"} />
       {option.label}
      </button>
     );

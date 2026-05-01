@@ -16,7 +16,7 @@ export function BackgroundBlobs() {
      repeat: Infinity,
      ease: "easeInOut",
     }}
-    className="absolute top-[-10%] left-[-10%] w-[800px] h-[800px] bg-accent/10 rounded-full blur-[120px] mix-blend-screen"
+    className="absolute top-[-10%] left-[-10%] w-[800px] h-[800px] bg-accent/10 rounded-full blur-[120px] dark:mix-blend-screen mix-blend-multiply"
    />
    <motion.div
     animate={{
@@ -30,7 +30,7 @@ export function BackgroundBlobs() {
      ease: "easeInOut",
      delay: 2,
     }}
-    className="absolute top-[30%] right-[-10%] w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[100px] mix-blend-screen"
+    className="absolute top-[30%] right-[-10%] w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[100px] dark:mix-blend-screen mix-blend-multiply"
    />
    <motion.div
     animate={{
@@ -44,7 +44,7 @@ export function BackgroundBlobs() {
      ease: "easeInOut",
      delay: 5,
     }}
-    className="absolute bottom-[-20%] left-[10%] w-[900px] h-[900px] bg-purple-500/5 rounded-full blur-[150px] mix-blend-screen"
+    className="absolute bottom-[-20%] left-[10%] w-[900px] h-[900px] bg-purple-500/5 rounded-full blur-[150px] dark:mix-blend-screen mix-blend-multiply"
    />
   </div>
  );

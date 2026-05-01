@@ -29,7 +29,7 @@ export function WallpaperCard({ image, priority = false, aspectRatio = "aspect-[
 
  const background = useTransform(
   [mouseX, mouseY],
-  ([x, y]) => `radial-gradient(600px circle at ${x * 100}% ${y * 100}%, rgba(255,255,255,0.1), transparent 40%)`
+  ([x, y]) => `radial-gradient(600px circle at ${(x as number) * 100}% ${(y as number) * 100}%, rgba(255,255,255,0.1), transparent 40%)`
  );
 
  return (

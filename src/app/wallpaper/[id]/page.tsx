@@ -31,7 +31,7 @@ export default async function WallpaperPage({ params }: PageProps) {
    <BackgroundBlobs />
    <Navbar />
 
-   <div className="container mx-auto px-6 md:px-12 pt-48 pb-20 relative z-10">
+   <div className="container mx-auto px-6 md:px-12 pt-32 pb-20 relative z-10">
     <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-10 transition-all hover:-translate-x-1 group">
      <div className="p-3 rounded-2xl glass-card group-hover:bg-accent/10 transition-colors">
       <ArrowLeft size={18} />
