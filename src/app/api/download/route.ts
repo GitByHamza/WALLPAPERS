@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -24,7 +26,7 @@ export async function GET(req: NextRequest) {
    headers: {
     "Content-Type": contentType,
     "Content-Disposition": `attachment; filename="${filename}"`,
-    "Cache-Control": "public, max-age=31536000, immutable",
+    "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
    },
   });
  } catch (error) {
