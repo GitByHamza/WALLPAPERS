@@ -1,209 +1,189 @@
-import { BackgroundBlobs } from "@/components/ui/background-blobs";
-import { Navbar } from "@/components/ui/navbar";
-import { getWallpaper, searchWallpapers } from "@/lib/wallhaven";
-import { WallpaperCard } from "@/components/ui/wallpaper-card";
-import { ArrowLeft, Download, Maximize2, Share2, Tag, Info, Palette } from "lucide-react";
-import Image from "next/image";
+import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-
-interface PageProps {
- params: Promise<{ id: string }>;
-}
-
-export default async function WallpaperPage({ params }: PageProps) {
- const resolvedParams = await params;
- const image = await getWallpaper(resolvedParams.id).catch(() => null);
-
- if (!image) {
-  notFound();
- }
-
- const primaryColor = image.colors[0] || "#6366f1";
-
- return (
-  <main className="min-h-screen bg-background text-foreground relative overflow-hidden">
-   <div 
-    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] opacity-10 blur-[150px] pointer-events-none z-0 rounded-full"
-    style={{ backgroundColor: primaryColor }}
-   />
-   <BackgroundBlobs />
-   <Navbar />
-
-   <div className="container mx-auto px-6 md:px-12 pt-32 pb-20 relative z-10">
-    <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-10 transition-all hover:-translate-x-1 group">
-     <div className="p-3 rounded-2xl glass-card group-hover:bg-accent/10 transition-colors">
-      <ArrowLeft size={18} />
-     </div>
-     <span className="font-bold">Back to Discovery</span>
-    </Link>
-
-    <div className="grid lg:grid-cols-[1fr_400px] gap-16 items-start">
-     {/* Image Preview Container */}
-     <div className="space-y-8">
-      <div className="relative aspect-video lg:aspect-auto h-[60vh] lg:h-[75vh] rounded-[2.5rem] overflow-hidden glass-card shadow-2xl group ring-1 ring-border">
-       <Image
-        src={image.path}
-        alt={`Wallpaper ${image.id}`}
-        fill
-        className="object-contain"
-        priority
-        unoptimized
-       />
-       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-       
-       <a 
-        href={image.path} 
-        target="_blank" 
-        className="absolute top-6 right-6 p-4 bg-black/40 hover:bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl text-white opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
-       >
-        <Maximize2 size={24} />
-       </a>
-      </div>
-      
-      {/* Mobile Actions (Visible on small screens) */}
-      <div className="lg:hidden flex gap-4">
-        <a
-          href={`/api/download?url=${encodeURIComponent(image.path)}&filename=wallpaper-${image.id}.${image.file_type.split('/')[1]}`}
-          className="flex-1 flex items-center justify-center gap-3 py-5 rounded-3xl bg-foreground text-background font-black shadow-xl active:scale-95 transition-all"
-        >
-          <Download size={20} /> Download Original
-        </a>
-      </div>
-     </div>
-
-     {/* Sidebar / Controls */}
-     <div className="space-y-10 animate-fade-in-up">
-      <div className="p-10 rounded-[2.5rem] glass-card relative overflow-hidden noise">
-       <div className="absolute top-0 right-0 p-8 opacity-5">
-        <Info size={120} />
-       </div>
-       
-       <h1 className="text-4xl font-black mb-2 tracking-tighter">Wallpaper #{image.id}</h1>
-       <p className="text-muted-foreground text-sm font-bold">Published on {new Date(image.created_at).toLocaleDateString(undefined, { dateStyle: 'long' })}</p>
-
-       <div className="mt-12 space-y-6">
-        <h3 className="text-xs font-black text-accent uppercase tracking-[0.2em]">Primary Action</h3>
-
-        <a
-         href={`/api/download?url=${encodeURIComponent(image.path)}&filename=wallpaper-${image.id}.${image.file_type.split('/')[1]}`}
-         className="flex items-center justify-between p-6 rounded-[2rem] bg-foreground text-background hover:opacity-90 transition-all shadow-2xl active:scale-[0.98] group"
-        >
-         <span className="font-black text-xl flex items-center gap-3">
-          <Download size={24} className="group-hover:translate-y-1 transition-transform" /> 
-          Get Original
-         </span>
-         <span className="text-xs font-black bg-background/10 px-4 py-2 rounded-xl border border-background/10">{image.resolution}</span>
-        </a>
-        
-        <button className="w-full flex items-center justify-center gap-3 py-5 rounded-[2rem] border border-border glass-card text-sm font-black text-muted-foreground hover:text-foreground hover:border-accent/30 transition-all">
-         <Share2 size={20} /> Share with setup
-        </button>
-       </div>
-      </div>
-
-      <div className="p-10 rounded-[2.5rem] glass-card space-y-10 noise">
-       <section>
-        <h3 className="flex items-center gap-2 text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-8">
-         <Info size={16} /> Technical Info
-        </h3>
-        <div className="grid grid-cols-2 gap-y-8 gap-x-6">
-         <div className="space-y-2">
-          <p className="text-muted-foreground/50 text-[10px] uppercase font-black tracking-widest">Format</p>
-          <p className="font-black text-base uppercase">{image.file_type.split('/')[1] || 'Image'}</p>
-         </div>
-         <div className="space-y-2">
-          <p className="text-muted-foreground/50 text-[10px] uppercase font-black tracking-widest">Category</p>
-          <p className="font-black text-base capitalize">{image.category}</p>
-         </div>
-         <div className="space-y-2">
-          <p className="text-muted-foreground/50 text-[10px] uppercase font-black tracking-widest">Size</p>
-          <p className="font-black text-base">{(image.file_size / 1024 / 1024).toFixed(2)} MB</p>
-         </div>
-         <div className="space-y-2">
-          <p className="text-muted-foreground/50 text-[10px] uppercase font-black tracking-widest">Views</p>
-          <p className="font-black text-base">{image.views.toLocaleString()}</p>
-         </div>
-        </div>
-       </section>
-
-       {/* Tags */}
-       {image.tags && image.tags.length > 0 && (
-        <section>
-         <h3 className="flex items-center gap-2 text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-6">
-          <Tag size={16} /> Meta Tags
-         </h3>
-         <div className="flex flex-wrap gap-3">
-          {image.tags.map((tag) => (
-           <Link
-            key={tag.id}
-            href={`/search?q=${tag.name}`}
-            className="px-5 py-2.5 rounded-2xl bg-muted border border-border text-xs font-black text-muted-foreground hover:bg-accent/10 hover:text-accent hover:border-accent/30 transition-all shadow-sm"
-           >
-            #{tag.name}
-           </Link>
+import { cookies } from "next/headers";
+import { Navbar } from "@/components/ui/navbar";
+import { WallpaperCard } from "@/components/ui/wallpaper-card";
+import { WallpaperViewer } from "@/components/ui/wallpaper-viewer";
+import { DownloadButton, ShareButton, ColorPalette } from "@/components/ui/wallpaper-actions";
+import { EmptyState } from "@/components/ui/empty-state";
+import {
+  getWallpaper,
+  searchWallpapers,
+  WallpaperNotFoundError,
+  type WallhavenImage,
+} from "@/lib/wallhaven";
+import { formatBytes, formatResolution, wallpaperTitle } from "@/lib/format";
+import { displayAspectRatio, resolutionTier } from "@/lib/resolutions";
+export const metadata: Metadata = { title: "Wallpaper details" };
+export default async function WallpaperPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  let image: WallhavenImage;
+  try {
+    image = await getWallpaper(id);
+  } catch (error) {
+    if (error instanceof WallpaperNotFoundError) notFound();
+    return (
+      <>
+        <Navbar />
+        <main id="main-content" className="site-width py-16">
+          <EmptyState error />
+        </main>
+      </>
+    );
+  }
+  const date = new Date(image.created_at.slice(0, 10));
+  const published = Number.isNaN(date.getTime())
+    ? "Date unavailable"
+    : new Intl.DateTimeFormat("en", { dateStyle: "long", timeZone: "UTC" }).format(date);
+  const title = wallpaperTitle(image.tags, image.category);
+  const tier = resolutionTier(image.dimension_x, image.dimension_y);
+  const facts = [
+    ["Dimensions", formatResolution(image.resolution)],
+    ["Aspect ratio", displayAspectRatio(image.dimension_x, image.dimension_y)],
+    ["File size", formatBytes(image.file_size)],
+    ["Format", image.file_type.split("/")[1]?.toUpperCase() || "Image"],
+    ["Views", image.views.toLocaleString("en")],
+    ["Favorites", image.favorites.toLocaleString("en")],
+  ];
+  const tags = image.tags || [];
+  return (
+    <>
+      <Navbar />
+      <main id="main-content" className="site-width wallpaper-page">
+        <nav className="detail-topline" aria-label="Wallpaper navigation">
+          <Link href="/" className="text-link">
+            <ArrowLeft size={15} />
+            Back to discovery
+          </Link>
+          <a
+            href={image.url}
+            className="text-link wallpaper-source"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View source <ArrowUpRight size={14} />
+          </a>
+        </nav>
+        <header className="wallpaper-heading">
+          <div className="wallpaper-heading-copy">
+            <h1>
+              {title}
+              <span className="quality-label">{tier}</span>
+            </h1>
+            <p>
+              {image.category.charAt(0).toUpperCase() + image.category.slice(1)}
+              <span aria-hidden="true"> · </span>Added {published}
+              {image.uploader ? ` · by ${image.uploader.username}` : ""}
+            </p>
+          </div>
+          <div className="wallpaper-heading-actions">
+            <ShareButton />
+            <DownloadButton url={image.path} />
+          </div>
+        </header>
+        <WallpaperViewer image={image} />
+        <dl className="wallpaper-specs">
+          {facts.map(([label, value]) => (
+            <div key={label}>
+              <dt>{label}</dt>
+              <dd>{value}</dd>
+            </div>
           ))}
-         </div>
+        </dl>
+        <section id="original-file" className="original-file">
+          <div>
+            <h2>Every pixel. The original.</h2>
+            <p>
+              {formatResolution(image.resolution)} · {image.file_type.split("/")[1]?.toUpperCase()}{" "}
+              · {formatBytes(image.file_size)}
+              <span>Original file from Wallhaven.</span>
+            </p>
+          </div>
+          <div className="original-file-actions">
+            <DownloadButton url={image.path} />
+            <a href={image.path} className="text-link" target="_blank" rel="noopener noreferrer">
+              Open image <ArrowUpRight size={14} />
+            </a>
+          </div>
         </section>
-       )}
-
-       {/* Colors */}
-       <section>
-        <h3 className="flex items-center gap-2 text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-6">
-         <Palette size={16} /> Color Palette
-        </h3>
-        <div className="flex items-center gap-4">
-         {image.colors.map((color, i) => (
-          <div 
-            key={i} 
-            className="w-12 h-12 rounded-2xl border border-border shadow-xl hover:scale-110 transition-transform cursor-help" 
-            style={{ backgroundColor: color }} 
-            title={color}
-          />
-         ))}
+        <div className="wallpaper-context">
+          <section className="wallpaper-colors">
+            <div className="context-heading">
+              <h2>A palette to borrow.</h2>
+              <p>Colors from this wallpaper. Select one to copy.</p>
+            </div>
+            <ColorPalette colors={image.colors} />
+          </section>
+          <section className="wallpaper-subjects">
+            <div className="context-heading">
+              <h2>Follow the details.</h2>
+              <p>Explore more through the subjects in this image.</p>
+            </div>
+            <div className="tag-list">
+              {tags.slice(0, 8).map((tag) => (
+                <Link key={tag.id} href={`/search?q=${encodeURIComponent(tag.name)}`}>
+                  {tag.name}
+                </Link>
+              ))}
+            </div>
+            {tags.length > 8 && (
+              <details className="more-subjects">
+                <summary>Show {tags.length - 8} more subjects</summary>
+                <div className="tag-list">
+                  {tags.slice(8).map((tag) => (
+                    <Link key={tag.id} href={`/search?q=${encodeURIComponent(tag.name)}`}>
+                      {tag.name}
+                    </Link>
+                  ))}
+                </div>
+              </details>
+            )}
+            {!tags.length && (
+              <p className="detail-empty-tags">No subjects have been added to this wallpaper.</p>
+            )}
+          </section>
         </div>
-       </section>
-      </div>
-     </div>
-    </div>
-
-    {/* Related Wallpapers */}
-    <section className="mt-40">
-     <div className="flex items-center justify-between mb-12">
-      <div>
-       <h2 className="text-4xl font-black text-foreground tracking-tighter">Related <span className="text-accent text-glow">Visuals.</span></h2>
-       <p className="text-muted-foreground text-lg mt-2 font-bold">Similar high-density renders for your setup.</p>
-      </div>
-     </div>
-     
-     <Suspense fallback={<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-       {[...Array(4)].map((_, i) => (
-         <div key={i} className="aspect-[16/10] rounded-[2rem] bg-muted animate-pulse border border-border" />
-       ))}
-     </div>}>
-      <RelatedWallpapers tags={image.tags?.map(t => t.name) || []} currentId={image.id} />
-     </Suspense>
-    </section>
-   </div>
-  </main>
- );
+        <div className="wallpaper-attribution">
+          <span>
+            Wallpaper {image.id.toUpperCase()} · Images belong to their respective creators.
+          </span>
+          <a href={image.url} target="_blank" rel="noopener noreferrer">
+            Credits & original source <ArrowUpRight size={13} />
+          </a>
+        </div>
+        <Suspense>
+          <RelatedWallpapers id={image.id} />
+        </Suspense>
+      </main>
+    </>
+  );
 }
-
-async function RelatedWallpapers({ tags, currentId }: { tags: string[]; currentId: string }) {
- const query = tags.slice(0, 3).join(" ") || "abstract";
- const data = await searchWallpapers(query, 1, "relevance", "100", 5).catch(() => null);
-
- if (!data || !data.data || data.data.length === 0) return null;
-
- // Filter out the current wallpaper
- const filtered = data.data.filter(img => img.id !== currentId).slice(0, 4);
-
- return (
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-   {filtered.map((image) => (
-    <WallpaperCard key={image.id} image={image} />
-   ))}
-  </div>
- );
+async function RelatedWallpapers({ id }: { id: string }) {
+  const purity = (await cookies()).get("settings_nsfw")?.value === "true" ? "111" : "100";
+  const data = await searchWallpapers({
+    query: `like:${id}`,
+    sort: "relevance",
+    purity,
+    atleast: "1920x1080",
+  }).catch(() => null);
+  const images = data?.data.filter((image) => image.id !== id).slice(0, 6) || [];
+  if (!images.length) return null;
+  return (
+    <section className="gallery-section">
+      <div className="section-heading">
+        <h2>A similar point of view.</h2>
+        <Link className="text-link" href={`/search?q=${encodeURIComponent(`like:${id}`)}`}>
+          Explore more <ArrowUpRight size={15} />
+        </Link>
+      </div>
+      <div className="gallery-grid">
+        {images.map((image) => (
+          <WallpaperCard key={image.id} image={image} />
+        ))}
+      </div>
+    </section>
+  );
 }

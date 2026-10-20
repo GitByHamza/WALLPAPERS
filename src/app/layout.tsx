@@ -1,46 +1,35 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
-import "./globals.css";
-
-const inter = Inter({
- variable: "--font-inter",
- subsets: ["latin"],
-});
-
-const outfit = Outfit({
- variable: "--font-outfit",
- subsets: ["latin"],
- weight: ["300", "400", "500", "600", "700"],
-});
-
-export const metadata: Metadata = {
- title: "Lumina Walls | 4K High-Res Wallpapers",
- description: "Premium collection of 4K wallpapers with glassmorphic design.",
-};
-
+import { Space_Grotesk, Space_Mono } from "next/font/google";
 import { Footer } from "@/components/ui/footer";
 import { ThemeProvider } from "@/components/theme-provider";
-
-export default function RootLayout({
- children,
-}: Readonly<{
- children: React.ReactNode;
-}>) {
- return (
-  <html lang="en" suppressHydrationWarning>
-   <body
-    className={`${inter.variable} ${outfit.variable} antialiased bg-background text-foreground selection:bg-accent/30 selection:text-white transition-colors duration-300`}
-   >
-    <ThemeProvider
-     attribute="class"
-     defaultTheme="dark"
-     enableSystem
-     disableTransitionOnChange
-    >
-     {children}
-     <Footer />
-    </ThemeProvider>
-   </body>
-  </html>
- );
+import "./globals.css";
+const grotesk = Space_Grotesk({ variable: "--font-grotesk", subsets: ["latin"], display: "swap" });
+const mono = Space_Mono({
+  variable: "--font-space-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+});
+export const metadata: Metadata = {
+  title: { default: "Lumina — A different point of view", template: "%s — Lumina" },
+  description:
+    "Discover high-resolution wallpapers for your desktop and phone. Explore by color, subject, and resolution, with original downloads from Wallhaven.",
+};
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="darkreader-lock" content="true" />
+      </head>
+      <body className={`${grotesk.variable} ${mono.variable}`}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          <a className="skip-link" href="#main-content">
+            Skip to content
+          </a>
+          {children}
+          <Footer />
+        </ThemeProvider>
+      </body>
+    </html>
+  );
 }

@@ -1,85 +1,64 @@
 "use client";
-
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
-
-interface PaginationProps {
- totalPages: number;
- currentPage: number;
- baseUrl: string;
-}
-
-export function Pagination({ totalPages, currentPage, baseUrl }: PaginationProps) {
- const searchParams = useSearchParams();
-
- // Helper to build URL with existing search params + new page
- const createPageUrl = (page: number) => {
-  const params = new URLSearchParams(searchParams.toString());
-  params.set("page", page.toString());
-  return `${baseUrl}?${params.toString()}`;
- };
-
- // Generate page numbers to show (max 5)
- const getPageNumbers = () => {
-  const pages = [];
-  let start = Math.max(1, currentPage - 2);
-  let end = Math.min(totalPages, start + 4);
-
-  if (end - start < 4) {
-   start = Math.max(1, end - 4);
+import { ArrowLeft, ArrowRight } from "lucide-react";
+export function Pagination({
+  totalPages,
+  currentPage,
+  baseUrl,
+  seed,
+}: {
+  totalPages: number;
+  currentPage: number;
+  baseUrl: string;
+  seed?: string | null;
+}) {
+  const params = useSearchParams();
+  if (totalPages <= 1) return null;
+  function href(page: number) {
+    const next = new URLSearchParams(params.toString());
+    next.set("page", String(page));
+    if (seed) next.set("seed", seed);
+    return `${baseUrl}?${next}`;
   }
-
-  for (let i = start; i <= end; i++) {
-   pages.push(i);
-  }
-  return pages;
- };
-
- if (totalPages <= 1) return null;
-
- return (
-   <div className="flex items-center justify-center gap-3 mt-16 mb-8">
-    {/* Previous Button */}
-    <Link
-     href={createPageUrl(currentPage - 1)}
-     className={cn(
-      "p-3 rounded-2xl bg-background border border-border text-foreground/50 hover:border-accent hover:text-accent transition-all duration-300 disabled:opacity-50 shadow-sm hover:shadow-md",
-      currentPage <= 1 && "pointer-events-none opacity-30"
-     )}
-     aria-disabled={currentPage <= 1}
-    >
-     <ChevronLeft size={20} />
-    </Link>
-
-    {/* Page Numbers */}
-    {getPageNumbers().map((page) => (
-     <Link
-      key={page}
-      href={createPageUrl(page)}
-      className={cn(
-       "w-12 h-12 flex items-center justify-center rounded-2xl border text-sm font-black transition-all duration-300",
-       currentPage === page
-        ? "bg-foreground text-background border-foreground shadow-xl scale-110 z-10"
-        : "bg-background border-border text-foreground/50 hover:border-accent hover:text-accent hover:bg-accent/5"
+  const start = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+  const pages = Array.from({ length: Math.min(5, totalPages) }, (_, index) => start + index);
+  return (
+    <nav className="pagination" aria-label="Wallpaper pages">
+      {currentPage > 1 ? (
+        <Link className="page-direction" href={href(currentPage - 1)} aria-label="Previous page">
+          <ArrowLeft size={15} />
+          <span>Previous</span>
+        </Link>
+      ) : (
+        <span className="unavailable page-direction" aria-disabled="true">
+          <ArrowLeft size={15} />
+          <span>Previous</span>
+        </span>
       )}
-     >
-      {page}
-     </Link>
-    ))}
-
-    {/* Next Button */}
-    <Link
-     href={createPageUrl(currentPage + 1)}
-     className={cn(
-      "p-3 rounded-2xl bg-background border border-border text-foreground/50 hover:border-accent hover:text-accent transition-all duration-300 disabled:opacity-50 shadow-sm hover:shadow-md",
-      currentPage >= totalPages && "pointer-events-none opacity-30"
-     )}
-     aria-disabled={currentPage >= totalPages}
-    >
-     <ChevronRight size={20} />
-    </Link>
-   </div>
- );
+      <div className="page-numbers">
+        {pages.map((page) => (
+          <Link
+            key={page}
+            href={href(page)}
+            aria-label={`Page ${page}`}
+            aria-current={page === currentPage ? "page" : undefined}
+          >
+            {page}
+          </Link>
+        ))}
+      </div>
+      {currentPage < totalPages ? (
+        <Link className="page-direction" href={href(currentPage + 1)} aria-label="Next page">
+          <span>Next</span>
+          <ArrowRight size={15} />
+        </Link>
+      ) : (
+        <span className="unavailable page-direction" aria-disabled="true">
+          <span>Next</span>
+          <ArrowRight size={15} />
+        </span>
+      )}
+    </nav>
+  );
 }

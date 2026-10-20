@@ -1,38 +1,38 @@
-# Lumina Walls - 4K Wallpaper Website
+# Lumina Walls
 
-A professional, modern wallpaper website built with Next.js 15, Tailwind CSS, and Framer Motion. Features a glassmorphism design, bubbling background effects, and high-quality 4K wallpapers via the Pexels API.
+A wallpaper gallery built with Next.js 16, React 19, Tailwind CSS 4, and the Wallhaven API.
 
-## Features
+The interface pairs Space Grotesk with Space Mono. Both the ink dark theme and warm paper light theme share the same layout, accessible controls, and restrained lime accents.
 
-- **Modern UI**: Glassmorphism, blurred backgrounds, and smooth animations.
-- **4K Support**: View and download wallpapers in Original (4K+), Large, and Medium resolutions.
-- **Dynamic Search**: Search for wallpapers by keyword.
-- **Pexels Integration**: Access thousands of high-quality free stock photos.
+## Run locally
 
-## Getting Started
+1. Install dependencies with `npm ci`.
+2. Optionally create `.env.local` with `WALLHAVEN_API_KEY=your_wallhaven_key`. Safe-for-work browsing works without a key. Mature content requires a valid Wallhaven key. The older `NEXT_PUBLIC_WALLHAVEN_API_KEY` name is supported for existing deployments; use the server-only name for new setups.
+3. Run `npm run dev` and open http://localhost:3000.
 
-1.  **Clone/Open the project.**
-2.  **Install dependencies**:
-    ```bash
-    npm install
-    ```
-3.  **Set up Environment Variables**:
-    Create a `.env.local` file in the root directory and add your Pexels API Key:
-    ```env
-    NEXT_PUBLIC_PEXELS_API_KEY=your_pexels_api_key_here
-    ```
-    *(You can get a free key from [Pexels API](https://www.pexels.com/api/))*
+The server needs access to wallhaven.cc, w.wallhaven.cc, and th.wallhaven.cc. The first build downloads Space Grotesk and Space Mono through next/font/google.
 
-4.  **Run the development server**:
-    ```bash
-    npm run dev
-    ```
+## Browsing
 
-5.  Open [http://localhost:3000](http://localhost:3000) with your browser.
+Discover, Popular, New, Mobile, and Search use a shared gallery. Sort, category, resolution, orientation, and color filters live in the URL and persist across pagination. Random searches preserve their seed across pages. Mobile results use portrait resolution thresholds.
 
-## Technologies
+Cards show actual Wallhaven views, favorites, resolutions, and colors. Collection insights summarize the wallpapers on the currently loaded page, not the full catalog or historical activity. Original downloads are restricted to canonical Wallhaven image URLs, streamed with time and size limits.
 
-- Next.js 15 (App Router)
-- Tailwind CSS v4 (configured via standard CSS)
-- Framer Motion (Animations)
-- Lucide React (Icons)
+Theme preferences are stored locally; the content preference uses a cookie. No account or analytics database is included.
+
+## Validation
+
+- `npm run lint`
+- `npx tsc --noEmit --incremental false`
+- `npm test` (Node.js 22.18 or newer for native TypeScript support)
+- `npm run build`
+
+Behavior tests cover filter normalization, portrait thresholds, random seeds, and download destination restrictions. Browser verification covers both themes and responsive layouts. See DESIGN.md for the visual system.
+
+## Resolution and viewer updates
+
+The detail viewer supports image, desktop, and phone previews, a full-screen viewing action, labeled palette copying, and original-file downloads. Device previews crop the image; they do not resize the downloaded original.
+
+Resolution presets include HD, FHD, 2K DCI (2048×1080), QHD (2560×1440), 4K UHD, 5K, 6K, 8K, 12K, and 16K. Select minimum or exact matching. Availability depends on the Wallhaven collection.
+
+The document includes Dark Reader’s static opt-out meta tag because Lumina provides its own light and dark themes. This prevents supported Dark Reader versions from recoloring the page and adding SVG attributes before hydration.
