@@ -90,7 +90,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<Col
             baseUrl="/"
             defaultSort={options.sort}
             query={options.query}
-            portrait={options.ratios === "9x16"}
             priority={!featured.length}
           />
         </section>

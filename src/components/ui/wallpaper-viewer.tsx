@@ -14,13 +14,14 @@ export function WallpaperViewer({ image }: { image: WallhavenImage }) {
   const [notice, setNotice] = useState("");
   const stage = useRef<HTMLDivElement>(null);
   return (
-    <section className="wallpaper-viewer" aria-label="Wallpaper preview">
+    <section
+      className={`wallpaper-viewer${mode === "image" ? " wallpaper-viewer-original" : ""}${image.dimension_y > image.dimension_x ? " wallpaper-viewer-portrait" : ""}`}
+      aria-label="Wallpaper preview"
+      style={{ "--wallpaper-ratio": image.dimension_x / image.dimension_y } as CSSProperties}
+    >
       <div
         ref={stage}
         className={`viewer-stage viewer-stage-${mode}`}
-        style={
-          { "--wallpaper-ratio": `${image.dimension_x} / ${image.dimension_y}` } as CSSProperties
-        }
       >
         <div className={`viewer-frame viewer-frame-${mode}`}>
           <WallpaperImage image={image} full priority sizes="(max-width: 640px) 95vw, 90vw" />

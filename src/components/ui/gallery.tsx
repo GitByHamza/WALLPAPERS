@@ -22,7 +22,6 @@ export function Gallery({
   baseUrl,
   defaultSort = "toplist",
   mobile = false,
-  portrait = mobile,
   query = "",
   priority = true,
 }: {
@@ -30,7 +29,6 @@ export function Gallery({
   baseUrl: string;
   defaultSort?: WallpaperSort;
   mobile?: boolean;
-  portrait?: boolean;
   query?: string;
   priority?: boolean;
 }) {
@@ -50,13 +48,13 @@ export function Gallery({
           </div>
           {data.data.length ? (
             <>
-              <div className={`gallery-grid${portrait ? " portrait" : ""}`}>
+              <div className={`gallery-grid${mobile ? " portrait" : ""}`}>
                 {data.data.map((image, index) => (
                   <WallpaperCard
                     key={image.id}
                     image={image}
                     priority={priority && index < 3}
-                    portrait={portrait}
+                    portrait={mobile}
                   />
                 ))}
               </div>

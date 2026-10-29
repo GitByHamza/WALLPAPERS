@@ -20,7 +20,6 @@ async function CollectionResults({
       baseUrl={baseUrl}
       defaultSort={options.sort}
       mobile={mobile}
-      portrait={mobile || options.ratios === "9x16"}
       query={options.query}
     />
   );

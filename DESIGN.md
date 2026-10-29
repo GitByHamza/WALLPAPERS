@@ -25,12 +25,12 @@ The desktop content width is capped at 1440px. Wide margins, fine dividers, mode
 
 ## Interaction and data
 
-Keep essential image metadata visible without hover. Theme controls explicitly select light or dark. Respect reduced motion, provide focus rings and labeled controls, and preserve browsing state in URLs. Use short transitions and subtle image scaling. Use gradients only to protect captions over photography.
+Keep essential image metadata visible without hover. Theme controls explicitly select light or dark. Respect reduced motion, provide focus rings and labeled controls, and preserve browsing state in URLs. Standard galleries keep uniform landscape cards and subtle image scaling. Only the Mobile tab uses portrait cards showing the complete original composition without hover zoom. Use gradients only to protect captions over photography.
 
 Collection charts summarize only the loaded results, with explicit numeric values and scope labels. Do not invent download totals, historical trends, live-status claims, or collection sizes.
 
 ## Wallpaper detail pages
 
-Use a full-width viewing stage with a large title and direct download action, followed by an inline specification strip. Image, Desktop, and Phone previews use the same original asset, with device cropping clearly explained. Separate palette and subject sections sit below the original-file action. Keep layouts and controls consistent across both themes.
+Use a viewing stage that follows the original image's aspect ratio, with a large title and direct download action, followed by an inline specification strip. Portrait originals use a tall, portrait-shaped viewer with controls below the image. Image, Desktop, and Phone previews use the same original asset, with device cropping clearly explained. Separate palette and subject sections sit below the original-file action. Keep layouts and controls consistent across both themes.
 
 Resolution filters use explicit pixel dimensions: HD, FHD, 2K DCI, QHD, 4K UHD, 5K, 6K, 8K, 12K, and 16K. Support minimum and exact matching; transpose dimensions for portrait searches. Counts and detail badges use the same presets.

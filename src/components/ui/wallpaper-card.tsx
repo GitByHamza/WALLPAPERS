@@ -18,9 +18,13 @@ export function WallpaperCard({
       className="wallpaper-card"
       aria-label={`View ${image.category} wallpaper, ${formatResolution(image.resolution)}`}
     >
-      <div className={`wallpaper-image${portrait ? " portrait" : ""}`}>
+      <div
+        className={`wallpaper-image${portrait ? " portrait" : ""}`}
+        style={portrait ? { aspectRatio: `${image.dimension_x} / ${image.dimension_y}` } : undefined}
+      >
         <WallpaperImage
           image={image}
+          full={portrait}
           priority={priority}
           sizes={
             portrait

@@ -31,7 +31,7 @@ Behavior tests cover filter normalization, portrait thresholds, random seeds, an
 
 ## Resolution and viewer updates
 
-The detail viewer supports image, desktop, and phone previews, a full-screen viewing action, labeled palette copying, and original-file downloads. Device previews crop the image; they do not resize the downloaded original.
+The Mobile tab shows complete portrait images at their native aspect ratio, using optimized originals rather than Wallhaven's cropped thumbnails. Other galleries keep uniform landscape cards and the homepage retains its original featured layout. The detail viewer follows the original proportions, including a tall portrait layout. It supports image, desktop, and phone previews, a full-screen viewing action, labeled palette copying, and original-file downloads. Device previews crop the image; they do not resize the downloaded original.
 
 Resolution presets include HD, FHD, 2K DCI (2048×1080), QHD (2560×1440), 4K UHD, 5K, 6K, 8K, 12K, and 16K. Select minimum or exact matching. Availability depends on the Wallhaven collection.
 
