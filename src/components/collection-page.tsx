@@ -4,6 +4,7 @@ import { Navbar } from "@/components/ui/navbar";
 import { Gallery, GallerySkeleton } from "@/components/ui/gallery";
 import { getCollectionOptions, scalar, type CollectionParams } from "@/lib/collection-options";
 import { searchWallpapers, type WallpaperOptions, type WallpaperSort } from "@/lib/wallhaven";
+import { prefetchNextWallpapers } from "@/lib/prefetch";
 async function CollectionResults({
   options,
   baseUrl,
@@ -14,6 +15,7 @@ async function CollectionResults({
   mobile: boolean;
 }) {
   const data = await searchWallpapers(options).catch(() => null);
+  prefetchNextWallpapers(options, data);
   return (
     <Gallery
       data={data}

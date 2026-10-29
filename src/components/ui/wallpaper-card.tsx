@@ -24,7 +24,7 @@ export function WallpaperCard({
       >
         <WallpaperImage
           image={image}
-          full={portrait}
+          uncropped={portrait}
           priority={priority}
           sizes={
             portrait

@@ -1,7 +1,20 @@
 "use client";
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, LoaderCircle } from "lucide-react";
+
+function DirectionLabel({ previous = false }: { previous?: boolean }) {
+  const { pending } = useLinkStatus();
+  const Icon = pending ? LoaderCircle : previous ? ArrowLeft : ArrowRight;
+  const icon = <Icon size={15} aria-hidden="true" className={pending ? "animate-spin" : undefined} />;
+  return (
+    <>
+      {previous && icon}
+      <span aria-live="polite">{pending ? "Loading…" : previous ? "Previous" : "Next"}</span>
+      {!previous && icon}
+    </>
+  );
+}
 export function Pagination({
   totalPages,
   currentPage,
@@ -26,9 +39,8 @@ export function Pagination({
   return (
     <nav className="pagination" aria-label="Wallpaper pages">
       {currentPage > 1 ? (
-        <Link className="page-direction" href={href(currentPage - 1)} aria-label="Previous page">
-          <ArrowLeft size={15} />
-          <span>Previous</span>
+        <Link className="page-direction" href={href(currentPage - 1)} prefetch aria-label="Previous page">
+          <DirectionLabel previous />
         </Link>
       ) : (
         <span className="unavailable page-direction" aria-disabled="true">
@@ -41,6 +53,7 @@ export function Pagination({
           <Link
             key={page}
             href={href(page)}
+            prefetch={false}
             aria-label={`Page ${page}`}
             aria-current={page === currentPage ? "page" : undefined}
           >
@@ -49,9 +62,8 @@ export function Pagination({
         ))}
       </div>
       {currentPage < totalPages ? (
-        <Link className="page-direction" href={href(currentPage + 1)} aria-label="Next page">
-          <span>Next</span>
-          <ArrowRight size={15} />
+        <Link className="page-direction" href={href(currentPage + 1)} prefetch aria-label="Next page">
+          <DirectionLabel />
         </Link>
       ) : (
         <span className="unavailable page-direction" aria-disabled="true">

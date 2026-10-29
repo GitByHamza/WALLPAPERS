@@ -46,6 +46,7 @@ export type WallpaperOptions = {
   seed?: string;
 };
 const BASE_URL = "https://wallhaven.cc/api/v1";
+const pendingSearches = new Map<string, Promise<WallhavenResponse>>();
 function buildUrl(endpoint: string, params: Record<string, string | number | undefined>) {
   const url = new URL(`${BASE_URL}${endpoint}`);
   const key = process.env.WALLHAVEN_API_KEY || process.env.NEXT_PUBLIC_WALLHAVEN_API_KEY;
@@ -68,15 +69,33 @@ export async function searchWallpapers(options: WallpaperOptions = {}): Promise<
     colors: options.colors,
     seed: options.sort === "random" ? options.seed : undefined,
   });
-  const response = await fetch(url, {
+  const key = url.href;
+  const existing = pendingSearches.get(key);
+  if (existing) return existing;
+  const request = fetch(url, {
     next: { revalidate: options.sort === "date_added" ? 300 : 3600 },
     signal: AbortSignal.timeout(15000),
-  });
-  if (!response.ok) throw new Error(`Wallpaper service returned ${response.status}`);
-  const json: WallhavenResponse = await response.json();
-  if (!Array.isArray(json.data) || !json.meta)
-    throw new Error("Wallpaper service returned an invalid response");
-  return json;
+  })
+    .then(async (response) => {
+      if (!response.ok) throw new Error(`Wallpaper service returned ${response.status}`);
+      const json: WallhavenResponse = await response.json();
+      if (!Array.isArray(json.data) || !json.meta)
+        throw new Error("Wallpaper service returned an invalid response");
+      return json;
+    })
+    .finally(() => pendingSearches.delete(key));
+  pendingSearches.set(key, request);
+  return request;
+}
+
+export function getNextWallpaperOptions(
+  options: WallpaperOptions,
+  meta: WallhavenResponse["meta"],
+): WallpaperOptions | null {
+  if (meta.current_page >= meta.last_page) return null;
+  const seed = options.sort === "random" ? meta.seed || options.seed : undefined;
+  if (options.sort === "random" && !seed) return null;
+  return { ...options, page: meta.current_page + 1, seed };
 }
 export async function getWallpaper(id: string): Promise<WallhavenImage> {
   if (!/^[a-z0-9]{6}$/.test(id)) throw new WallpaperNotFoundError("Wallpaper not found");

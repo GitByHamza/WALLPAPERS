@@ -7,6 +7,7 @@ import { WallpaperImage } from "@/components/ui/wallpaper-image";
 import { getCollectionOptions, type CollectionParams } from "@/lib/collection-options";
 import { searchWallpapers, type WallhavenImage } from "@/lib/wallhaven";
 import { formatResolution } from "@/lib/format";
+import { prefetchNextWallpapers } from "@/lib/prefetch";
 function FeaturedImage({
   image,
   title,
@@ -45,6 +46,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Col
   const options = getCollectionOptions(params);
   options.purity = (await cookies()).get("settings_nsfw")?.value === "true" ? "111" : "100";
   const data = await searchWallpapers(options).catch(() => null);
+  prefetchNextWallpapers(options, data);
   const featured =
     data?.data.filter((image) => image.dimension_x >= image.dimension_y).slice(0, 3) || [];
   return (
